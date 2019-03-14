@@ -28,6 +28,15 @@ var RED = require("node-red");
 // Create an Express app
 var red_app = express();
 
+// TV Stuff
+let smartcast = require("vizio-smart-cast");
+let tv = new smartcast("192.168.1.152", "Zvsylja7if");
+
+// Sonos stuff
+
+const { Sonos } = require("sonos");
+let device = new Sonos("192.168.1.172");
+let lastVol;
 // Add a simple route for static content served from 'public'
 //red_app.use(express.static(__dirname +"/public"));
 
