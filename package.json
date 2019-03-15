@@ -69,7 +69,8 @@
     "url": "https://github.com/dceejay/electron-node-red/issues"
   },
   "homepage": "https://github.com/dceejay/electron-node-red#readme",
-  "devDependencies": {
+
+  "optionalDependencies": {
     "electron": "^4.0.7",
     "electron-rebuild": "*",
     "electron-squirrel-startup": "*",
