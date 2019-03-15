@@ -5,6 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron main.js",
+    "headless": "node main.js -h",
     "test": "echo \" Warning: no test specified \"",
     "watch": "nodemon --exec \"npm run start\" --ext js,css,json --ignore build/",
     "clean": "rm -rf ./build ../electron-bin && mkdir -p ./build ../electron-bin",
@@ -31,6 +32,7 @@
     "airplayer": "^2.0.0",
     "cheerio": "^1.0.0-rc.2",
     "express": "^4.16.4",
+    "minimist": "^1.2.0",
     "node-fetch": "^2.3.0",
     "node-red": "*",
     "node-red-contrib-alexa-home-skill": "~0.1.17",

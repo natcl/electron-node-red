@@ -10,6 +10,7 @@ const urledit = "/admin";
 // tcp port to use
 const listenPort = "18880"; // Hard code for now
 // const listenPort = parseInt(Math.random()*16383+49152) // or random ephemeral port
+var argvJson = require('minimist')(process.argv.slice(2))
 
 const os = require("os");
 const electron = require("electron");
@@ -59,18 +60,17 @@ red_app.get("/tv/:codeset/:code", function(req, res) {
 });
 
 red_app.get("/cycle_input", function(req, res) {
-    res.send("cycle_input");
-  });
+  res.send("cycle_input");
+});
 red_app.get("/volume/:vol", function(req, res) {
   let vol = Number(req.params.vol);
   device.setVolume(vol);
-  
+
   lastVol = vol;
   res.send("Triggered Volume change");
 });
- 
-red_app.get("/toggle_pause", function(req, res) {
 
+red_app.get("/toggle_pause", function(req, res) {
   res.send(`toggle_pause`);
 });
 // Create a server
@@ -110,8 +110,6 @@ var settings = {
     smartcast: require("vizio-smart-cast"),
     turnOffDisplay: require("turn-off-display"),
     cheerio: require("cheerio")
-
-
   } // enables global context
 };
 
@@ -189,33 +187,36 @@ function createWindow() {
     mainWindow = null;
   });
 }
+// Only run if headless is false
+let headless = argvJson.h;
+if (!headless) {
+  // Called when Electron has finished initialization and is ready to create browser windows.
+  app.on("ready", createWindow);
 
-// Called when Electron has finished initialization and is ready to create browser windows.
-app.on("ready", createWindow);
+  // Quit when all windows are closed.
+  app.on("window-all-closed", function() {
+    // On OS X it is common for applications and their menu bar
+    // to stay active until the user quits explicitly with Cmd + Q
+    if (process.platform !== "darwin") {
+      app.quit();
+    }
+  });
 
-// Quit when all windows are closed.
-app.on("window-all-closed", function() {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
-});
-
-app.on("activate", function() {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) {
-    createWindow();
-    mainWindow.loadURL("http://127.0.0.1:" + listenPort + url);
-  }
-});
+  app.on("activate", function() {
+    // On OS X it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (mainWindow === null) {
+      createWindow();
+      mainWindow.loadURL("http://127.0.0.1:" + listenPort + url);
+    }
+  });
+}
 
 // Start the Node-RED runtime, then load the inital page
 RED.start().then(function() {
   server.listen(listenPort, "127.0.0.1", function() {
     console.log(`Starting Server http://127.0.0.1:${+listenPort}${url}`);
-    mainWindow.loadURL("http://127.0.0.1:" + listenPort + url);
+    if (!headless) mainWindow.loadURL("http://127.0.0.1:" + listenPort + url);
   });
 });
 
