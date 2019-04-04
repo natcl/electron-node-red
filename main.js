@@ -13,7 +13,7 @@ const listenPort = "18880"; // Hard code for now
 var argvJson = require('minimist')(process.argv.slice(2))
 
 const os = require("os");
-const hostname = os.hostname();
+const hostname = `192.168.1.153`;
 let headless = argvJson.h;
 if (!headless) {
   const electron = require("electron");
