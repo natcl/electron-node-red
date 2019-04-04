@@ -13,7 +13,7 @@ const listenPort = "18880"; // Hard code for now
 var argvJson = require('minimist')(process.argv.slice(2))
 
 const os = require("os");
-console.log(os.hostname());
+const hostname = os.hostname();
 let headless = argvJson.h;
 if (!headless) {
   const electron = require("electron");
@@ -155,7 +155,7 @@ function createWindow() {
   ) {
     if (
       httpResponseCode == 404 &&
-      newURL == "http://localhost:" + listenPort + url
+      newURL == `${hostname}:` + listenPort + url
     ) {
       setTimeout(webContents.reload, 200);
     }
@@ -210,16 +210,16 @@ if (!headless) {
     // dock icon is clicked and there are no other windows open.
     if (mainWindow === null) {
       createWindow();
-      mainWindow.loadURL("http://127.0.0.1:" + listenPort + url);
+      mainWindow.loadURL(`http://${hostname}:` + listenPort + url);
     }
   });
 }
 
 // Start the Node-RED runtime, then load the inital page
 RED.start().then(function () {
-  server.listen(listenPort, "127.0.0.1", function () {
-    console.log(`Starting Server http://127.0.0.1:${+listenPort}${url}`);
-    if (!headless) mainWindow.loadURL("http://127.0.0.1:" + listenPort + url);
+  server.listen(listenPort, hostname, function () {
+    console.log(`Starting Server http://${hostname}:${+listenPort}${url}`);
+    if (!headless) mainWindow.loadURL(`http://${hostname}:` + listenPort + url);
   });
 });
 
