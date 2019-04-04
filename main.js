@@ -13,10 +13,13 @@ const listenPort = "18880"; // Hard code for now
 var argvJson = require('minimist')(process.argv.slice(2))
 
 const os = require("os");
-const electron = require("electron");
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
-const { Menu, MenuItem } = electron;
+let headless = argvJson.h;
+if (!headless) {
+  const electron = require("electron");
+  const app = electron.app;
+  const BrowserWindow = electron.BrowserWindow;
+  const { Menu, MenuItem } = electron;
+}
 
 // this should be placed at top of main.js to handle squirrel setup events quickly
 if (handleSquirrelEvent()) {
@@ -41,17 +44,17 @@ let device = new Sonos("192.168.1.172");
 let lastVol;
 // Add a simple route for static content served from 'public'
 red_app.use(express.static(__dirname + "/public"));
-red_app.get("/all_off", function(req, res) {
+red_app.get("/all_off", function (req, res) {
   tv.control.keyCommand(Number(11), Number(0), "KEYDOWN");
   res.send("Triggered All off route");
 });
 
-red_app.get("/all_on", function(req, res) {
+red_app.get("/all_on", function (req, res) {
   tv.control.keyCommand(Number(11), Number(1), "KEYDOWN");
   res.send("Triggered All on route");
 });
 
-red_app.get("/tv/:codeset/:code", function(req, res) {
+red_app.get("/tv/:codeset/:code", function (req, res) {
   let codeset = Number(req.params.codeset);
   let code = Number(req.params.code);
 
@@ -59,10 +62,10 @@ red_app.get("/tv/:codeset/:code", function(req, res) {
   res.send("Triggered All on route");
 });
 
-red_app.get("/cycle_input", function(req, res) {
+red_app.get("/cycle_input", function (req, res) {
   res.send("cycle_input");
 });
-red_app.get("/volume/:vol", function(req, res) {
+red_app.get("/volume/:vol", function (req, res) {
   let vol = Number(req.params.vol);
   device.setVolume(vol);
 
@@ -70,7 +73,7 @@ red_app.get("/volume/:vol", function(req, res) {
   res.send("Triggered Volume change");
 });
 
-red_app.get("/toggle_pause", function(req, res) {
+red_app.get("/toggle_pause", function (req, res) {
   res.send(`toggle_pause`);
 });
 // Create a server
@@ -142,7 +145,7 @@ function createWindow() {
   });
 
   var webContents = mainWindow.webContents;
-  webContents.on("did-get-response-details", function(
+  webContents.on("did-get-response-details", function (
     event,
     status,
     newURL,
@@ -161,7 +164,7 @@ function createWindow() {
   // Open the DevTools.
   //mainWindow.webContents.openDevTools();
 
-  mainWindow.webContents.on("new-window", function(
+  mainWindow.webContents.on("new-window", function (
     e,
     url,
     frameName,
@@ -180,7 +183,7 @@ function createWindow() {
   });
 
   // Emitted when the window is closed.
-  mainWindow.on("closed", function() {
+  mainWindow.on("closed", function () {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
@@ -188,13 +191,12 @@ function createWindow() {
   });
 }
 // Only run if headless is false
-let headless = argvJson.h;
 if (!headless) {
   // Called when Electron has finished initialization and is ready to create browser windows.
   app.on("ready", createWindow);
 
   // Quit when all windows are closed.
-  app.on("window-all-closed", function() {
+  app.on("window-all-closed", function () {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== "darwin") {
@@ -202,7 +204,7 @@ if (!headless) {
     }
   });
 
-  app.on("activate", function() {
+  app.on("activate", function () {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (mainWindow === null) {
@@ -213,8 +215,8 @@ if (!headless) {
 }
 
 // Start the Node-RED runtime, then load the inital page
-RED.start().then(function() {
-  server.listen(listenPort, "127.0.0.1", function() {
+RED.start().then(function () {
+  server.listen(listenPort, "127.0.0.1", function () {
     console.log(`Starting Server http://127.0.0.1:${+listenPort}${url}`);
     if (!headless) mainWindow.loadURL("http://127.0.0.1:" + listenPort + url);
   });
@@ -235,17 +237,17 @@ function handleSquirrelEvent() {
   const updateDotExe = path.resolve(path.join(rootAtomFolder, "Update.exe"));
   const exeName = path.basename(process.execPath);
 
-  const spawn = function(command, args) {
+  const spawn = function (command, args) {
     let spawnedProcess, error;
 
     try {
       spawnedProcess = ChildProcess.spawn(command, args, { detached: true });
-    } catch (error) {}
+    } catch (error) { }
 
     return spawnedProcess;
   };
 
-  const spawnUpdate = function(args) {
+  const spawnUpdate = function (args) {
     return spawn(updateDotExe, args);
   };
 
