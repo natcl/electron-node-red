@@ -35,8 +35,8 @@ var RED = require("node-red");
 var red_app = express();
 
 // TV Stuff
-let smartcast = require("vizio-smart-cast");
-let tv = new smartcast("192.168.1.152", "Zvsylja7if");
+const smartcast = require("vizio-smart-cast");
+const tv = new smartcast("192.168.1.211", "Ztc3n5pg1e");
 
 // Sonos stuff
 
@@ -46,12 +46,12 @@ let lastVol;
 // Add a simple route for static content served from 'public'
 red_app.use(express.static(__dirname + "/public"));
 red_app.get("/all_off", function (req, res) {
-  tv.control.keyCommand(Number(11), Number(0), "KEYDOWN");
+  tv.control.power.off();
   res.send("Triggered All off route");
 });
 
 red_app.get("/all_on", function (req, res) {
-  tv.control.keyCommand(Number(11), Number(1), "KEYDOWN");
+  tv.control.power.on();
   res.send("Triggered All on route");
 });
 
