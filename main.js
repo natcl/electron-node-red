@@ -39,7 +39,7 @@ const path = require('path');
 const http = require('http');
 const express = require("express");
 const electron = require('electron');
-const isDev = require('electron-is-dev');
+// const isDev = require('electron-is-dev');
 const Store = require('electron-store');
 const store = new Store();
 
@@ -257,24 +257,24 @@ if (process.platform === 'darwin') {
 }
 
 // Add Dev menu if in dev mode
-if (isDev) {
-    template.push({
-        label: 'Development',
-        submenu: [
-            { label: 'Reload', accelerator: 'CmdOrCtrl+R',
-                click (item, focusedWindow) {
-                    if (focusedWindow) focusedWindow.reload()
-                }
-            },
-            { label: 'Toggle Developer Tools',
-                accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
-                click (item, focusedWindow) {
-                    if (focusedWindow) focusedWindow.webContents.toggleDevTools()
-                }
-            }
-        ]
-    })
-}
+// if (isDev) {
+//     template.push({
+//         label: 'Development',
+//         submenu: [
+//             { label: 'Reload', accelerator: 'CmdOrCtrl+R',
+//                 click (item, focusedWindow) {
+//                     if (focusedWindow) focusedWindow.reload()
+//                 }
+//             },
+//             { label: 'Toggle Developer Tools',
+//                 accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+//                 click (item, focusedWindow) {
+//                     if (focusedWindow) focusedWindow.webContents.toggleDevTools()
+//                 }
+//             }
+//         ]
+//     })
+// }
 
 function saveFlow() {
     const file_path = dialog.showSaveDialogSync({
